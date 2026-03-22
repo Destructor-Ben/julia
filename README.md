@@ -1,10 +1,10 @@
 # Julia
 
+TODO: include a preview image
+
 A website to generate fractals.
 
-Located [here](https://destructor-ben.github.io/projects/julia).
-
-TODO: setup repo for autopublish
+Located [here](https://destructor-ben.github.io/julia).
 
 # TODO
 

@@ -10,6 +10,7 @@
   import SettingsIcon from "$lib/components/icons/SettingsIcon.svelte";
   import GithubIcon from "$lib/components/icons/GithubIcon.svelte";
   import Settings from "./Settings.svelte";
+  import { untrack } from "svelte";
 
   let showSettings = $state(false);
 
@@ -22,6 +23,13 @@
 
   $effect(() => {
     handleResize();
+
+    untrack(() => {
+      // Strange bug on first load, the canvas doesn't have the correct size set by the time everything is rendered
+      // Setting it manually fixes it
+      canvas.width = config.width;
+      canvas.height = config.height;
+    })
   });
 
   // #region Renderer Setup
@@ -52,27 +60,89 @@
 
   // #endregion
 
-  // #region Input
-
-  // TODO: this could benefit from being put into an input handler file
+  // #region Receiving Input
 
   let pressedKeys: { [key: string]: boolean } = {};
   let pressedMouse = false;
 
-  function isCanvasFocused() {
-    return document.activeElement === canvas;
+  function shouldNotReceiveInput() {
+    return false; // TODO: test if checks for the export and settings window are needed
   }
 
   function canvasContainsPoint(x: number, y: number) {
     const rect = canvas.getBoundingClientRect();
     return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
   }
+
+  function handleMouseDown(event: MouseEvent) {
+    pressedMouse = true;
+  }
+
+  function handleMouseUp(event: MouseEvent) {
+    pressedMouse = false;
+  }
+
+  function handleKeyDown(event: KeyboardEvent) {
+    // Prevents repeated presses from holding a key down
+    if (!pressedKeys[event.code]) {
+      pressedKeys[event.code] = true;
+      onKeyDown(event.code);
+    }
+  }
+
+  function handleKeyUp(event: KeyboardEvent) {
+    // Prevents repeated presses from holding a key down
+    if (pressedKeys[event.code]) {
+      pressedKeys[event.code] = false;
+      onKeyUp(event.code);
+    }
+  }
+
+  // #endregion
+
+  // #region Handling Input
+
+  // TODO: add WASD and arrow keys input
+  function onKeyDown(key: string) {
+    
+  }
+
+  function onKeyUp(key: string) {
+    
+  }
+
+  function handleScroll(event: WheelEvent) {
+    if (shouldNotReceiveInput()) {
+      return;
+    }
+
+    // Zooming
+    event.preventDefault();
+
+    // We want scaling to be proportional to the existing scale
+    // Since adding 0.1 scale when we are already at 300 barely does anything
+    const scrollUnits = event.deltaMode;
+    let scrollAmount = event.deltaY;
+
+    switch (scrollUnits) {
+      case 0: // Pixels
+        break;
+      case 1: // Lines
+        scrollAmount *= 16; // Estimate, but should work
+        break;
+      case 2: // Pages
+        scrollAmount *= window.innerHeight;
+        break;
+    }
+
+    // Scale to make scrolling 1 page double in size
+    scrollAmount /= window.innerHeight;
+
+    config.scale -= config.scale * scrollAmount;
+  }
   
-  // Mouse input
   function handleMouseMove(event: MouseEvent) {
     if (!canvasContainsPoint(event.clientX, event.clientY) || showSettings) {
-      //TODO: bring back !isCanvasFocused() || 
-      // For some reason, is is false while clicking and dragging
       return;
     }
 
@@ -110,74 +180,6 @@
     // TODO: make 250 be an actual value to prevent mouse drifting
     config.translationX -= event.movementX * 3.5 / config.width / config.scale;
     config.translationY -= event.movementY * 3.5 / config.height / config.scale;
-  }
-
-  // TODO: maybe prevent defaults? also for keys?
-  function handleMouseDown(event: MouseEvent) {
-    pressedMouse = true;
-  }
-
-  function handleMouseUp(event: MouseEvent) {
-    pressedMouse = false;
-  }
-
-  // Keyboard input
-  // TODO: add WASD and arrow keys input
-  function handleKeyDown(event: KeyboardEvent) {
-    // Prevents repeated presses from holding a key down
-    if (!pressedKeys[event.code]) {
-      pressedKeys[event.code] = true;
-      onKeyDown(event.code);
-    }
-  }
-
-  function handleKeyUp(event: KeyboardEvent) {
-    // Prevents repeated presses from holding a key down
-    if (pressedKeys[event.code]) {
-      pressedKeys[event.code] = false;
-      onKeyUp(event.code);
-    }
-  }
-
-  // These run regardless of focus or whether the mouse is over the canvas
-  function onKeyDown(key: string) {
-    
-  }
-
-  function onKeyUp(key: string) {
-    
-  }
-
-  // Scroll wheel input
-  function handleScroll(event: WheelEvent) {
-    if (!isCanvasFocused() || showSettings) {
-      return;
-    }
-
-    // Zooming
-    event.preventDefault();
-
-    // We want scaling to be proportional to the existing scale
-    // Since adding 0.1 scale when we are already at 300 barely does anything
-    const scrollUnits = event.deltaMode;
-    let scrollAmount = event.deltaY;
-
-    switch (scrollUnits) {
-      case 0: // Pixels
-        break;
-      case 1: // Lines
-        scrollAmount *= 16; // Estimate, but should work
-        break;
-      case 2: // Pages
-        scrollAmount *= window.innerHeight;
-        break;
-    }
-
-    // Scale to make scrolling 1 page double in size
-    scrollAmount /= window.innerHeight;
-
-    // TODO: zoom to mouse, not center of screen
-    config.scale -= config.scale * scrollAmount;
   }
 
   // #endregion
@@ -258,7 +260,7 @@
   </div>
 </header>
 
-<!-- Settings -->
+<!-- Settings and canvas -->
 <div class="relative">
   <canvas
     width={config.width}
