@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@import "@catppuccin/tailwindcss/mocha.css";
+
+html {
+    background-color: var(--catppuccin-color-base);
+}
+
+* {
+    color: var(--catppuccin-color-text);
+}
