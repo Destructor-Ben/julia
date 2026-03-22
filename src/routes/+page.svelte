@@ -64,21 +64,42 @@
 
   let pressedKeys: { [key: string]: boolean } = {};
   let pressedMouse = false;
+  let mousePos: { x: number, y: number } = { x: -1, y: -1 };
 
   function shouldNotReceiveInput() {
-    return false; // TODO: test if checks for the export and settings window are needed
+    return document.elementFromPoint(mousePos.x, mousePos.y) != canvas;
   }
+  
+  function handleMouseMove(event: MouseEvent) {
+    mousePos = {
+      x: event.clientX,
+      y: event.clientY,
+    };
 
-  function canvasContainsPoint(x: number, y: number) {
-    const rect = canvas.getBoundingClientRect();
-    return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    if (shouldNotReceiveInput()) {
+      return;
+    }
+
+    if (modifyJuliaCoords(event)) {
+      return;
+    }
+
+    moveWithMouse(event);
   }
 
   function handleMouseDown(event: MouseEvent) {
+    if (event.button !== 0) {
+      return;
+    }
+
     pressedMouse = true;
   }
 
   function handleMouseUp(event: MouseEvent) {
+    if (event.button !== 0) {
+      return;
+    }
+
     pressedMouse = false;
   }
 
@@ -103,6 +124,7 @@
   // #region Handling Input
 
   // TODO: add WASD and arrow keys input
+  // TODO: how to figure out when to ignore the input (e.g. do we ignore if the mouse is hovering over the header?)
   function onKeyDown(key: string) {
     
   }
@@ -140,19 +162,10 @@
 
     config.scale -= config.scale * scrollAmount;
   }
-  
-  function handleMouseMove(event: MouseEvent) {
-    if (!canvasContainsPoint(event.clientX, event.clientY) || showSettings) {
-      return;
-    }
-
-    modifyJuliaCoords(event);
-    moveWithMouse(event);
-  }
 
   function modifyJuliaCoords(event: MouseEvent) {
     if (!pressedKeys["KeyJ"]) {
-      return;
+      return false;
     }
 
     const canvasSize = canvas.getBoundingClientRect();
@@ -166,11 +179,11 @@
     // Normalize to [-1 - 1] coordinate space for fractal
     config.real = (x - width / 2) / width * 2;
     config.imaginary = (y - height / 2) / height * 2;
+
+    return true;
   }
 
   // TODO: make this only worlk if the start coord is in the canvas too?
-  // TODO: only move the mouse if left button is down, not all
-  // TODO: stop moving if we are updating the Julia coords
   function moveWithMouse(event: MouseEvent) {
     if (!pressedMouse) {
       return;

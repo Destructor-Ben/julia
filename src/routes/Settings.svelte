@@ -67,7 +67,7 @@
 </NumberInput>
 
 <h2>Renderer</h2>
-
+<p>More iterations also increases the depth of the fractal, and can remove a lot of fireflies. A higher escape radius usually means more quality, but low can be fun to experiment with.</p>
 <NumberInput bind:value={config.maxIterations} min={1} max={1000} step={1}>
   Iterations - Higher means more quality but slower
 </NumberInput>
