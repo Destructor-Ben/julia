@@ -64,10 +64,11 @@
 
   let pressedKeys: { [key: string]: boolean } = {};
   let pressedMouse = false;
+  let startedDragOnCanvas = false;
   let mousePos: { x: number, y: number } = { x: -1, y: -1 };
 
-  function shouldNotReceiveInput() {
-    return document.elementFromPoint(mousePos.x, mousePos.y) != canvas;
+  function mouseIsOverCanvas() {
+    return document.elementFromPoint(mousePos.x, mousePos.y) === canvas;
   }
   
   function handleMouseMove(event: MouseEvent) {
@@ -76,7 +77,7 @@
       y: event.clientY,
     };
 
-    if (shouldNotReceiveInput()) {
+    if (!mouseIsOverCanvas()) {
       return;
     }
 
@@ -92,6 +93,7 @@
       return;
     }
 
+    startedDragOnCanvas = mouseIsOverCanvas();
     pressedMouse = true;
   }
 
@@ -100,6 +102,7 @@
       return;
     }
 
+    startedDragOnCanvas = false;
     pressedMouse = false;
   }
 
@@ -134,7 +137,7 @@
   }
 
   function handleScroll(event: WheelEvent) {
-    if (shouldNotReceiveInput()) {
+    if (!mouseIsOverCanvas()) {
       return;
     }
 
@@ -183,9 +186,8 @@
     return true;
   }
 
-  // TODO: make this only worlk if the start coord is in the canvas too?
   function moveWithMouse(event: MouseEvent) {
-    if (!pressedMouse) {
+    if (!pressedMouse || !startedDragOnCanvas) {
       return;
     }
 
