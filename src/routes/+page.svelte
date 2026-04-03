@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { fade, fly } from "svelte/transition";
   import { untrack } from "svelte";
 
   import JuliaRenderer from "$lib/julia/julia-renderer";
@@ -11,6 +10,8 @@
   import SettingsIcon from "$lib/components/icons/SettingsIcon.svelte";
   import GithubIcon from "$lib/components/icons/GithubIcon.svelte";
   import Settings from "./Settings.svelte";
+  import ExportPopup from "./ExportPopup.svelte";
+  import { glide } from "$lib/transitions";
 
   let showSettings = $state(false);
 
@@ -253,7 +254,7 @@
 />
 
 <!-- Header -->
-<header bind:this={header} class="bg-ctp-mantle p-2 grid grid-cols-3 items-center">
+<header bind:this={header} class="bg-ctp-mantle p-2 grid grid-cols-3 items-center border-b-2 border-b-ctp-surface0">
   <div class="justify-self-start flex items-center gap-1">
     <HeaderButton title="Open Settings" action={() => showSettings = !showSettings}>
       <div class="transition-transform duration-300" class:rotate-60={showSettings}>
@@ -287,7 +288,7 @@
   ></canvas>
 
   {#if showSettings}
-    <div class="bg-ctp-crust p-2 absolute top-0 left-0 overflow-y-scroll overflow-x-hidden" style={`height: ${config.height}px;`} transition:fly={{ x: '-100%', duration: 300 }}>
+    <div class="bg-ctp-crust p-2 absolute top-0 left-0 overflow-y-scroll overflow-x-hidden border-r-2 border-r-ctp-surface0" style={`height: ${config.height}px;`} transition:glide={{ x: '-100%', duration: 300 }}>
       <Settings bind:config={config} />
     </div>
   {/if}
@@ -295,12 +296,5 @@
 
 <!-- Export screen -->
 {#if showExportScreen}
-  <div class="absolute top-0 left-0 size-full bg-black/30 flex items-center justify-center" transition:fade={{ duration: 300 }}>
-    <div class="w-100 h-75 bg-red-500" transition:fly={{ y: "100%", duration: 300 }}>
-      Test
-
-      <button onclick={() => { showExportScreen = false; }}>Cancel</button>
-      <button onclick={exportFractal}>Export</button>
-    </div>
-  </div>
+  <ExportPopup {config} bind:showExportScreen={showExportScreen} />
 {/if}
