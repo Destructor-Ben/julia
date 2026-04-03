@@ -129,6 +129,8 @@
 
   // TODO: add WASD and arrow keys input
   // TODO: how to figure out when to ignore the input (e.g. do we ignore if the mouse is hovering over the header?)
+  // TODO: Q + E to rotate?
+  // TODO: mouse + r to rotate?
   function onKeyDown(key: string) {
     
   }
@@ -187,7 +189,6 @@
     return true;
   }
 
-  // TODO: handle rotation
   function moveWithMouse(event: MouseEvent) {
     if (!pressedMouse || !startedDragOnCanvas) {
       return;
@@ -196,9 +197,14 @@
     // You have no idea how fucking long it took to get this magic number
     // I will NOT explain how i got it because fuck anyone reading this
     // Fuck you future me if you ever need to change this
-    const scale = 1 / config.height * 2 / config.scale;
-    config.translationX -= event.movementX * scale;
-    config.translationY -= event.movementY * scale;
+    const scale = 2 / config.height / config.scale;
+    // Rotation was quite easy for some reason
+    const deltaX = event.movementX * scale;
+    const deltaY = event.movementY * scale;
+    const cosRot = Math.cos(-config.rotation);
+    const sinRot = Math.sin(-config.rotation);
+    config.translationX -= deltaX * cosRot + deltaY * sinRot;
+    config.translationY -= deltaX * -sinRot + deltaY * cosRot;
   }
 
   // #endregion
