@@ -67,13 +67,13 @@
 </NumberInput>
 
 <h2>Renderer</h2>
-<p>More iterations also increases the depth of the fractal, and can remove a lot of fireflies. A higher escape radius usually means more quality, but low can be fun to experiment with.</p>
+<!--<p>More iterations also increases the depth of the fractal,<br/>and can remove a lot of fireflies.<br/>A higher escape radius usually means more quality,<br/>but low can be fun to experiment with.</p>-->
 <NumberInput bind:value={config.maxIterations} min={1} max={1000} step={1}>
-  Iterations - Higher means more quality but slower
+  Iterations<!-- - Higher means more quality but slower-->
 </NumberInput>
 
 <NumberInput bind:value={config.radius} min={1} max={1000} step={0.01}>
-  Escape Radius - How far a point must travel to be considered part of the set
+  Escape Radius<!--<br/>How far a point must travel to be considered part of the set-->
 </NumberInput>
 
 <h2>Falloff</h2>
@@ -96,7 +96,7 @@
 <NumberInput bind:value={config.backgroundColorA} min={0} max={1} step={0.01}>A</NumberInput>
 
 <h2>Set Color</h2>
-<ToggleInput bind:value={config.useSetColorOverValue}>Whether to use the color provided below for pixels in the set, or to pretend that pixels in the set have the value provided below.</ToggleInput>
+<ToggleInput bind:value={config.useSetColorOverValue}>Whether to use the color provided below for pixels in the set,<br/>or to pretend that pixels in the set have the value provided below.</ToggleInput>
 <NumberInput bind:value={config.setValue} min={0} max={1} step={0.01}>The value of pixels in the set</NumberInput>
 <NumberInput bind:value={config.setColorR} min={0} max={255} step={1}>R</NumberInput>
 <NumberInput bind:value={config.setColorG} min={0} max={255} step={1}>G</NumberInput>

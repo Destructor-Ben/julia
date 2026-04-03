@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fade, fly } from "svelte/transition";
+  import { untrack } from "svelte";
 
   import JuliaRenderer from "$lib/julia/julia-renderer";
   import { defaultConfig } from "$lib/julia/julia-config";
@@ -10,7 +11,6 @@
   import SettingsIcon from "$lib/components/icons/SettingsIcon.svelte";
   import GithubIcon from "$lib/components/icons/GithubIcon.svelte";
   import Settings from "./Settings.svelte";
-  import { untrack } from "svelte";
 
   let showSettings = $state(false);
 
@@ -180,21 +180,24 @@
     const height = canvasSize.height;
 
     // Normalize to [-1 - 1] coordinate space for fractal
-    config.real = (x - width / 2) / width * 2;
-    config.imaginary = (y - height / 2) / height * 2;
+    config.real = x / width * 2 - 1;
+    config.imaginary = y / height * 2 - 1;
 
     return true;
   }
 
+  // TODO: handle rotation
   function moveWithMouse(event: MouseEvent) {
     if (!pressedMouse || !startedDragOnCanvas) {
       return;
     }
 
-    // Scale is included so we move more when we are zoomed in and less when we are zoomed out
-    // TODO: make 250 be an actual value to prevent mouse drifting
-    config.translationX -= event.movementX * 3.5 / config.width / config.scale;
-    config.translationY -= event.movementY * 3.5 / config.height / config.scale;
+    // You have no idea how fucking long it took to get this magic number
+    // I will NOT explain how i got it because fuck anyone reading this
+    // Fuck you future me if you ever need to change this
+    const scale = 1 / config.height * 2 / config.scale;
+    config.translationX -= event.movementX * scale;
+    config.translationY -= event.movementY * scale;
   }
 
   // #endregion

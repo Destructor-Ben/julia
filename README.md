@@ -17,6 +17,7 @@ Located [here](https://destructor-ben.github.io/julia).
 - Allow to use a falloff that makes the extremely dim areas get remapped down very easily
 - Allow a custom glsl expression for a falloff
 - Allow a custom glsl function to evaluate a fractal
+- Add a system of preset configs
 
 // TODO: add option for axes overlay
 // TODO: add better controls for changing transform

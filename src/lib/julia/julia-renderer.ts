@@ -10,6 +10,7 @@ import FragSource from "./shaders/frag.glsl?raw";
 
 import * as JuliaFractal from "./fractals/julia";
 import * as MandelbrotFractal from "./fractals/mandlebrot";
+import { calculateTransform } from "./julia-math";
 
 // TODO: multilayering settings
 // TODO: Banding (can be sin, cos, or tan (tan is best)), also multiply by 100
@@ -298,26 +299,14 @@ export default class JuliaRenderer {
   }
 
   private updateTransform(gl: WebGL2RenderingContext) {
-    // Order of transformation matters a lot here, do not touch!
-    const transform = mat4.create();
-
-    // Translation
-    mat4.translate(transform, transform, [
-      this.config.translationX as number,
-      this.config.translationY as number,
-      0,
-    ]);
-
-    // Rotation
-    mat4.rotate(transform, transform, this.config.rotation, [0, 0, 1]);
-
-    // Scale - Reciprocate, idk why
-    const scale = 1 / this.config.scale;
-    mat4.scale(transform, transform, [scale, scale, scale]);
-
-    // Aspect ratio - We need to flip y axis because we change from postive y being down to up
-    const aspectRatio = this.config.width / this.config.height;
-    mat4.scale(transform, transform, [aspectRatio, -1, 1]);
+    const transform = calculateTransform(
+      this.config.translationX,
+      this.config.translationY,
+      this.config.rotation,
+      this.config.scale,
+      this.config.width,
+      this.config.height,
+    );
 
     gl.uniformMatrix4fv(this.uniformLocations.transform, false, transform);
   }
