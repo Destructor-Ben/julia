@@ -3,28 +3,31 @@
   // This message is repeated across all input elements
   interface Props {
     value: number
-    min: number
-    max: number
+    min?: number
+    max?: number
     step?: number
     disabled?: boolean
     forceMinMaxNumber?: boolean
+    showSlider?: boolean
   }
 
-  let { value = $bindable(), min, max, step = 1, disabled = false, forceMinMaxNumber = false }: Props = $props();
+  let { value = $bindable(), min = 0, max = 5, step = 1, disabled = false, forceMinMaxNumber = false, showSlider = true }: Props = $props();
 
   let numberMin = $derived(forceMinMaxNumber ? min : "");
   let numberMax = $derived(forceMinMaxNumber ? max : "");
 </script>
 
 <div class="flex items-center justify-end gap-2">
-  <input type="range"
-    class="w-40 h-2 cursor-pointer bg-ctp-surface0 rounded-full border-2 border-ctp-overlay0 hover:bg-ctp-surface1 transition-colors shadow-sm"
-    bind:value={value}
-    {min}
-    {max}
-    {step}
-    {disabled}
-  />
+  {#if showSlider}
+    <input type="range"
+      class="w-40 h-2 cursor-pointer bg-ctp-surface0 rounded-full border-2 border-ctp-overlay0 hover:bg-ctp-surface1 transition-colors shadow-sm"
+      bind:value={value}
+      {min}
+      {max}
+      {step}
+      {disabled}
+    />
+  {/if}
 
   <input type="number"
     class="w-20 bg-ctp-surface0 rounded-lg px-2 py-1 border-2 border-ctp-overlay0 outline-none hover:bg-ctp-surface1 transition-colors focus:bg-ctp-surface0 focus:border-ctp-mauve shadow-sm"

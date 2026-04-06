@@ -6,13 +6,14 @@
     variant: "primary" | "secondary"
     onclick?: MouseEventHandler<EventTarget>
     children: Snippet
+    class?: string
   };
 
-  let { variant, onclick, children }: Props = $props();
+  let { variant, onclick, children, class: className = "" }: Props = $props();
 </script>
 
 <button class={
-  variant === "primary"   ? "cursor-pointer p-2 rounded-2xl transition-colors active:bg-ctp-mauve-900 hover:bg-ctp-mauve-700 bg-ctp-mauve text-ctp-base" :
-  variant === "secondary" ? "cursor-pointer p-2 rounded-2xl transition-colors border-2 border-ctp-surface1 active:bg-ctp-surface1 hover:bg-ctp-surface0" :
-  ""
+  variant === "primary"   ? `${className} shadow-sm cursor-pointer p-2 rounded-2xl transition-colors active:bg-ctp-mauve-900 hover:bg-ctp-mauve-700 bg-ctp-mauve text-ctp-base` :
+  variant === "secondary" ? `${className} shadow-sm cursor-pointer p-2 rounded-2xl transition-colors border-2 border-ctp-surface1 active:bg-ctp-surface1 hover:bg-ctp-surface0` :
+  className
 } {onclick}>{@render children()}</button>
