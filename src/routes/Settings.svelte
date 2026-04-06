@@ -1,11 +1,15 @@
 <script lang="ts">
-  import NumberInput from "$lib/components/NumberInput.svelte";
-  import SelectInput from "$lib/components/SelectInput.svelte";
-  import ToggleInput from "$lib/components/ToggleInput.svelte";
+  import Dropdown from "$lib/components/input/Dropdown.svelte";
+  import Number from "$lib/components/input/Number.svelte";
+  import Toggle from "$lib/components/input/Toggle.svelte";
 
   import { type Config } from "$lib/julia/julia-config";
   import FractalType from "$lib/julia/fractal-type";
   import FalloffType from "$lib/julia/falloff-type";
+  import Heading from "$lib/components/Heading.svelte";
+  import SettingsGroup from "./SettingsGroup.svelte";
+  import SettingsLabel from "./SettingsLabel.svelte";
+  import Color from "$lib/components/input/Color.svelte";
 
   let { config = $bindable() }: { config: Config } = $props();
 
@@ -18,87 +22,73 @@
                              .map(key => ({ id: FalloffType[key as any], name: key }));
 </script>
 
-<h2>Fractal Type</h2>
+<Heading level={2} class="text-center mb-2">Julia Config</Heading>
+<hr class="border border-ctp-overlay0 my-2 rounded-full" />
 
-<SelectInput bind:value={config.fractal} options={fractalTypes}>
-  Fractal
-</SelectInput>
+<SettingsGroup heading="Fractal">
+  <SettingsLabel label="Fractal Type" />
+  <Dropdown bind:value={config.fractal} options={fractalTypes} />
 
-{#if config.fractal === FractalType.Julia}
-  <h2>Julia Coordinates</h2>
+  {#if config.fractal === FractalType.Julia}
+    <SettingsLabel label="Real" tooltip="The real component of the julia coordinate\nHold J to change the coordinate with the mouse" />
+    <Number bind:value={config.real} min={-3} max={3} step={0.01} />
+    
+    <SettingsLabel label="Imaginary" tooltip="The imaginary component of the julia coordinate\nHold J to change the coordinate with the mouse" />
+    <Number bind:value={config.imaginary} min={-3} max={3} step={0.01} />
+  {/if}
 
-  <p>Hold J to change the coordinates with the mouse.</p>
+  {#if config.fractal === FractalType.Mandelbrot}
+    <SettingsLabel label="Exponent" tooltip="The exponent of z in the Mandelbrot equation\nNegative and fractional values allowed" />
+    <Number bind:value={config.exponent} min={-5} max={5} step={0.01} />
+  {/if}
+</SettingsGroup>
 
-  <NumberInput bind:value={config.real} min={-3} max={3} step={0.01}>
-    Real Component
-  </NumberInput>
+<SettingsGroup heading="Transform">
+  <SettingsLabel label="Position X" />
+  <Number bind:value={config.translationX} min={-3} max={3} step={0.01} />
+
+  <SettingsLabel label="Position Y" />
+  <Number bind:value={config.translationY} min={-3} max={3} step={0.01} />
+
+  <SettingsLabel label="Rotation" tooltip="Anti-clockwise, measured in radians" />
+  <Number bind:value={config.rotation} min={0} max={Math.PI * 2} step={0.01} />
+
+  <SettingsLabel label="Scale" />
+  <Number bind:value={config.scale} min={0.01} max={15} step={0.01} />
+</SettingsGroup>
+
+<SettingsGroup heading="Renderer">
+  <SettingsLabel label="Max Iterations" tooltip="The maximum number of times the fractal equation can be run on a point\nHigher increases quality and depth of the fractal and can remove fireflies\nLower improves performance" />
+  <Number bind:value={config.maxIterations} min={1} max={100} step={1} />
+
+  <SettingsLabel label="Escape Radius" tooltip="How far a point must travel to be considered not part of the set" />
+  <Number bind:value={config.radius} min={0.0001} max={10} step={0.01} />
+</SettingsGroup>
+
+<SettingsGroup heading="Falloff">
+  <SettingsLabel label="Falloff Type" />
+  <Dropdown bind:value={config.falloffType} options={falloffTypes} />
+
+  <SettingsLabel label="Falloff Strength" />
+  <Number bind:value={config.falloffStrength} min={0} max={10000} step={0.01} />
+</SettingsGroup>
+
+<SettingsGroup heading="Colors">
+  <SettingsLabel label="Falloff Color Strength" tooltip="Allows blowing out the falloff color\nLowering this and raising falloff strength have similar effects (ignoring blowout)" />
+  <Number bind:value={config.fractalColorStrength} min={0} max={1000} step={0.01} />
+
+  <SettingsLabel label="Use Set Color" tooltip="Whether to use the provided color for pixels in the set,\nor to pretend that pixels in the set have the value provided below\nCan be used to hide fireflies" />
+  <Toggle id="useSetColorOverValue" bind:value={config.useSetColorOverValue} />
   
-  <NumberInput bind:value={config.imaginary} min={-3} max={3} step={0.01}>
-    Imaginary Component
-  </NumberInput>
-{/if}
+  <SettingsLabel label="Set Value" tooltip="The falloff value that each pixel in the set is assigned if the above toggle is enabled" />
+  <Number bind:value={config.setValue} min={0} max={1} step={0.01} />
 
-{#if config.fractal === FractalType.Mandelbrot}
-  <h2>Mandelbrot Exponent</h2>
+  <SettingsLabel label="Falloff Color" />
+  <Color bind:r={config.fractalColorR} bind:g={config.fractalColorG} bind:b={config.fractalColorB} bind:a={config.fractalColorA} />
 
-  <p>Negative and fractional exponents are allowed.</p>
-  
-  <NumberInput bind:value={config.exponent} min={-5} max={5} step={0.01}>
-    Exponent
-  </NumberInput>
-{/if}
+  <SettingsLabel label="Background Color" />
+  <Color bind:r={config.backgroundColorR} bind:g={config.backgroundColorG} bind:b={config.backgroundColorB} bind:a={config.backgroundColorA} />
 
-<h2>Transformation</h2>
-
-<NumberInput bind:value={config.translationX} min={-3} max={3} step={0.01}>
-  Translation X
-</NumberInput>
-
-<NumberInput bind:value={config.translationY} min={-3} max={3} step={0.01}>
-  Translation Y
-</NumberInput>
-
-<NumberInput bind:value={config.rotation} min={0} max={Math.PI * 2} step={0.01}>
-  Rotation (Radians)
-</NumberInput>
-
-<NumberInput bind:value={config.scale} min={0.01} max={15} step={0.01}>
-  Scale
-</NumberInput>
-
-<h2>Renderer</h2>
-<!--<p>More iterations also increases the depth of the fractal,<br/>and can remove a lot of fireflies.<br/>A higher escape radius usually means more quality,<br/>but low can be fun to experiment with.</p>-->
-<NumberInput bind:value={config.maxIterations} min={1} max={1000} step={1}>
-  Iterations<!-- - Higher means more quality but slower-->
-</NumberInput>
-
-<NumberInput bind:value={config.radius} min={1} max={1000} step={0.01}>
-  Escape Radius<!--<br/>How far a point must travel to be considered part of the set-->
-</NumberInput>
-
-<h2>Falloff</h2>
-<NumberInput bind:value={config.falloffStrength} min={0} max={10000} step={0.01}>Falloff strength</NumberInput>
-<SelectInput bind:value={config.falloffType} options={falloffTypes}>
-  Falloff type
-</SelectInput>
-
-<h2>Falloff Color</h2>
-<NumberInput bind:value={config.fractalColorR} min={0} max={255} step={1}>R</NumberInput>
-<NumberInput bind:value={config.fractalColorG} min={0} max={255} step={1}>G</NumberInput>
-<NumberInput bind:value={config.fractalColorB} min={0} max={255} step={1}>B</NumberInput>
-<NumberInput bind:value={config.fractalColorA} min={0} max={1} step={0.01}>A</NumberInput>
-<NumberInput bind:value={config.fractalColorStrength} min={0} max={1000} step={0.01}>Strength (allows blowing out)</NumberInput>
-
-<h2>Background Color</h2>
-<NumberInput bind:value={config.backgroundColorR} min={0} max={255} step={1}>R</NumberInput>
-<NumberInput bind:value={config.backgroundColorG} min={0} max={255} step={1}>G</NumberInput>
-<NumberInput bind:value={config.backgroundColorB} min={0} max={255} step={1}>B</NumberInput>
-<NumberInput bind:value={config.backgroundColorA} min={0} max={1} step={0.01}>A</NumberInput>
-
-<h2>Set Color</h2>
-<ToggleInput bind:value={config.useSetColorOverValue}>Whether to use the color provided below for pixels in the set,<br/>or to pretend that pixels in the set have the value provided below.</ToggleInput>
-<NumberInput bind:value={config.setValue} min={0} max={1} step={0.01}>The value of pixels in the set</NumberInput>
-<NumberInput bind:value={config.setColorR} min={0} max={255} step={1}>R</NumberInput>
-<NumberInput bind:value={config.setColorG} min={0} max={255} step={1}>G</NumberInput>
-<NumberInput bind:value={config.setColorB} min={0} max={255} step={1}>B</NumberInput>
-<NumberInput bind:value={config.setColorA} min={0} max={1} step={0.01}>A</NumberInput>
+  <SettingsLabel label="Set Color" />
+  <Color bind:r={config.setColorR} bind:g={config.setColorG} bind:b={config.setColorB} bind:a={config.setColorA} />
+</SettingsGroup>

@@ -19,7 +19,7 @@
 
   function handleResize() {
     config.width = window.innerWidth;
-    config.height = window.innerHeight - header.clientHeight;
+    config.height = window.innerHeight - header.clientHeight - 2; // 2px for the border
   }
 
   $effect(() => {
@@ -260,9 +260,9 @@
 />
 
 <!-- Header -->
-<header bind:this={header} class="bg-ctp-mantle p-2 grid grid-cols-3 items-center border-b-2 border-b-ctp-surface0">
+<header bind:this={header} class="bg-ctp-mantle p-2 grid grid-cols-3 items-center border-b-2 border-b-ctp-surface1">
   <div class="justify-self-start flex items-center gap-1">
-    <HeaderButton title="Open Settings" action={() => showSettings = !showSettings}>
+    <HeaderButton title="Open Config" action={() => showSettings = !showSettings}>
       <div class="transition-transform duration-300" class:rotate-60={showSettings}>
         <SettingsIcon width={24} height={24} />
       </div>
@@ -294,7 +294,7 @@
   ></canvas>
 
   {#if showSettings}
-    <div class="bg-ctp-crust p-2 absolute top-0 left-0 overflow-y-scroll overflow-x-hidden border-r-2 border-r-ctp-surface0" style={`height: ${config.height}px;`} transition:glide={{ x: '-100%', duration: 300 }}>
+    <div class="w-125 bg-ctp-crust p-4 absolute top-0 left-0 overflow-y-scroll overflow-x-hidden border-r-2 border-r-ctp-surface1" style={`height: ${config.height}px;`} transition:glide={{ x: '-100%', duration: 300 }}>
       <Settings bind:config={config} />
     </div>
   {/if}
