@@ -18,7 +18,7 @@
 
 <div class="flex items-center justify-end gap-2">
   <input type="range"
-    class="w-50 h-2 cursor-pointer bg-ctp-surface0 rounded-full border-2 border-ctp-overlay0 hover:bg-ctp-surface1 transition-colors shadow-sm"
+    class="w-40 h-2 cursor-pointer bg-ctp-surface0 rounded-full border-2 border-ctp-overlay0 hover:bg-ctp-surface1 transition-colors shadow-sm"
     bind:value={value}
     {min}
     {max}

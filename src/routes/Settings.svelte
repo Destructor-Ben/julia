@@ -74,14 +74,14 @@
 </SettingsGroup>
 
 <SettingsGroup heading="Colors">
-  <SettingsLabel label="Falloff Color Strength" tooltip="Allows blowing out the falloff color\nLowering this and raising falloff strength have similar effects (ignoring blowout)" />
-  <Number bind:value={config.fractalColorStrength} min={0} max={1000} step={0.01} />
-
   <SettingsLabel label="Use Set Color" tooltip="Whether to use the provided color for pixels in the set,\nor to pretend that pixels in the set have the value provided below\nCan be used to hide fireflies" />
   <Toggle id="useSetColorOverValue" bind:value={config.useSetColorOverValue} />
   
   <SettingsLabel label="Set Value" tooltip="The falloff value that each pixel in the set is assigned if the above toggle is enabled" />
   <Number bind:value={config.setValue} min={0} max={1} step={0.01} />
+
+  <SettingsLabel label="Falloff Color Strength" tooltip="A multiplier to the falloff color to allow blowing it out by raising it's brightness above 1\nLowering this and raising falloff strength have similar effects\n(ignoring that lowering falloff strength doesn't cause blowout)" />
+  <Number bind:value={config.fractalColorStrength} min={0} max={1000} step={0.01} />
 
   <SettingsLabel label="Falloff Color" />
   <Color bind:r={config.fractalColorR} bind:g={config.fractalColorG} bind:b={config.fractalColorB} bind:a={config.fractalColorA} />

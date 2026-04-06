@@ -294,7 +294,7 @@
   ></canvas>
 
   {#if showSettings}
-    <div class="w-125 bg-ctp-crust p-4 absolute top-0 left-0 overflow-y-scroll overflow-x-hidden border-r-2 border-r-ctp-surface1" style={`height: ${config.height}px;`} transition:glide={{ x: '-100%', duration: 300 }}>
+    <div class="w-125 bg-ctp-crust/90 backdrop-blur-lg p-4 absolute top-0 left-0 overflow-y-scroll overflow-x-hidden border-r-2 border-r-ctp-surface1" style={`height: ${config.height}px;`} transition:glide={{ x: '-100%', duration: 300 }}>
       <Settings bind:config={config} />
     </div>
   {/if}
