@@ -100,7 +100,7 @@
 
     {#if shouldShowMessage}
       <div class="absolute top-full left-0 w-full mt-2 flex items-center justify-center" transition:fly={{ duration: 150, y: "-100%" }}>
-        <div class="text-ctp-base p-2 rounded-2xl shadow-xl font-semibold text-sm" class:bg-ctp-green={messageType === "success"} class:bg-ctp-red={messageType === "error"}>{message}</div>
+        <div class="text-ctp-base py-2 px-4 rounded-2xl shadow-xl font-semibold text-sm" class:bg-ctp-green={messageType === "success"} class:bg-ctp-red={messageType === "error"}>{message}</div>
       </div>
     {/if}
   </div>
