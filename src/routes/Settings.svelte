@@ -3,13 +3,14 @@
   import Number from "$lib/components/input/Number.svelte";
   import Toggle from "$lib/components/input/Toggle.svelte";
 
-  import { type Config } from "$lib/julia/julia-config";
+  import { defaultConfig, type Config } from "$lib/julia/julia-config";
   import FractalType from "$lib/julia/fractal-type";
   import FalloffType from "$lib/julia/falloff-type";
   import Heading from "$lib/components/Heading.svelte";
   import SettingsGroup from "./SettingsGroup.svelte";
   import SettingsLabel from "./SettingsLabel.svelte";
   import Color from "$lib/components/input/Color.svelte";
+  import Button from "$lib/components/Button.svelte";
 
   let { config = $bindable(), selectedPreset = $bindable(), presetOptions }: { config: Config, selectedPreset: number, presetOptions: any } = $props();
 
@@ -20,15 +21,46 @@
   const falloffTypes = Object.keys(FalloffType)
                              .filter(key => typeof FalloffType[key as any] === 'number')
                              .map(key => ({ id: FalloffType[key as any], name: key }));
+
+  async function importClipboard() {
+    // TODO: validate that it is valid JSON
+    const configText = await navigator.clipboard.readText();
+    const json = JSON.parse(configText);
+
+    const configKeys = Object.keys(defaultConfig);
+
+    const strippedConfig = {};
+    configKeys.forEach(key => {
+      if (key === "width" || key === "height") {
+        return;
+      }
+
+      if (key in json) {
+        (strippedConfig as any)[key] = json[key];
+      }
+    });
+
+    config = {
+      ...config,
+      ...strippedConfig,
+    };
+  }
 </script>
 
 <Heading level={2} class="text-center mb-2">Julia Config</Heading>
-<hr class="border border-ctp-overlay0 my-2 rounded-full" />
+<hr class="border border-ctp-overlay0 my-3 rounded-full" />
 
-<SettingsGroup heading="Preset">
+<SettingsGroup heading="Presets">
   <SettingsLabel label="Select Preset" />
   <Dropdown bind:value={selectedPreset} options={presetOptions} />
+
+  <SettingsLabel label="Import Config" tooltip="Import a config from your clipboard" />
+  <div>
+    <Button variant="primary" onclick={importClipboard} class="float-right">Import</Button>
+  </div>
 </SettingsGroup>
+
+<hr class="border border-ctp-overlay0 my-3 rounded-full" />
 
 <SettingsGroup heading="Fractal">
   <SettingsLabel label="Fractal Type" />

@@ -234,7 +234,7 @@
       name: preset.name,
     });
 
-    presetConfigs.push(preset.config);
+    presetConfigs.push(JSON.parse(preset.config));
   });
 
   // Set config when the preset is selected
@@ -252,7 +252,8 @@
 
     let { width: _a, height: _b, ...strippedConfig } = config;
     let { width: _c, height: _d, ...strippedPreset } = presetConfigs[selectedPreset];
-    if (JSON.stringify(strippedConfig) != JSON.stringify(strippedPreset)) {
+
+    if (!Object.keys(strippedConfig).every(key => (strippedConfig as any)[key] === (strippedPreset as any)[key])) {
       selectedPreset = -1;
     }
   });
