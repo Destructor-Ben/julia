@@ -11,6 +11,7 @@
   import SettingsLabel from "./SettingsLabel.svelte";
   import Color from "$lib/components/input/Color.svelte";
   import Button from "$lib/components/Button.svelte";
+  import MessagePopup from "$lib/components/MessagePopup.svelte";
 
   let { config = $bindable(), selectedPreset = $bindable(), presetOptions }: { config: Config, selectedPreset: number, presetOptions: any } = $props();
 
@@ -22,10 +23,21 @@
                              .filter(key => typeof FalloffType[key as any] === 'number')
                              .map(key => ({ id: FalloffType[key as any], name: key }));
 
+  let messagePopup: MessagePopup;
+
   async function importClipboard() {
-    // TODO: validate that it is valid JSON
     const configText = await navigator.clipboard.readText();
-    const json = JSON.parse(configText);
+
+    let json: any;
+
+    try {
+      json = JSON.parse(configText);
+    }
+    catch (error) {
+      console.log(error);
+      messagePopup.showMessage("Imported text was not recognized as a valid config", "error", 3000);
+      return;
+    }
 
     const configKeys = Object.keys(defaultConfig);
 
@@ -44,6 +56,8 @@
       ...config,
       ...strippedConfig,
     };
+
+    messagePopup.showMessage("Imported!", "success");
   }
 </script>
 
@@ -55,8 +69,10 @@
   <Dropdown bind:value={selectedPreset} options={presetOptions} />
 
   <SettingsLabel label="Import Config" tooltip="Import a config from your clipboard" />
-  <div>
+  <div class="relative">
     <Button variant="primary" onclick={importClipboard} class="float-right">Import</Button>
+
+    <MessagePopup bind:this={messagePopup} useDefaultStyle={false} class="absolute top-full right-0 mt-2 w-max" />
   </div>
 </SettingsGroup>
 

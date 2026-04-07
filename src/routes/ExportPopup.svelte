@@ -1,6 +1,7 @@
 <script lang="ts">
   import Button from "$lib/components/Button.svelte";
   import Number from "$lib/components/input/Number.svelte";
+  import MessagePopup from "$lib/components/MessagePopup.svelte";
   import type { Config } from "$lib/julia/julia-config";
   import JuliaRenderer from "$lib/julia/julia-renderer";
   import { fade, fly } from "svelte/transition";
@@ -9,27 +10,7 @@
 
   let exportWidth = $state(1920);
   let exportHeight = $state(1080);
-
-  let message = $state("");
-  let shouldShowMessage = $state(false);
-  let messageType = $state("");
-
-  let timeoutHandle: null | number = null;
-
-  function showMessage(msg: string, type: string, duration: number = 1500) {
-    if (shouldShowMessage && timeoutHandle) {
-      clearTimeout(timeoutHandle);
-    }
-
-    message = msg;
-    messageType = type;
-    shouldShowMessage = true;
-
-    timeoutHandle = setTimeout(() => {
-      shouldShowMessage = false;
-      timeoutHandle = null;
-    }, duration);
-  }
+  let messagePopup: MessagePopup;
 
   function getStrippedConfig() {
     const { width, height, ...strippedConfig } = config;
@@ -42,7 +23,7 @@
 
   function exportFractal() {
     if (exportWidth <= 0 || exportHeight <= 0) {
-      showMessage("Width and height can't be less than 1", "error", 3000);
+      messagePopup.showMessage("Width and height can't be less than 1", "error", 3000);
       return;
     }
 
@@ -65,10 +46,10 @@
   async function copyConfig() {
     try {
       await navigator.clipboard.writeText(JSON.stringify(getStrippedConfig()));
-      showMessage("Copied!", "success");
+      messagePopup.showMessage("Copied!", "success");
     } catch (error) {
       console.error(error);
-      showMessage(`An error occured: ${error}`, "error", 3000);
+      messagePopup.showMessage(`An error occured: ${error}`, "error", 3000);
     }
   }
 </script>
@@ -98,10 +79,6 @@
       <Button class="w-50" variant="primary" onclick={exportFractal}>Export</Button>
     </div>
 
-    {#if shouldShowMessage}
-      <div class="absolute top-full left-0 w-full mt-2 flex items-center justify-center" transition:fly={{ duration: 150, y: "-100%" }}>
-        <div class="text-ctp-base py-2 px-4 rounded-2xl shadow-xl font-semibold text-sm" class:bg-ctp-green={messageType === "success"} class:bg-ctp-red={messageType === "error"}>{message}</div>
-      </div>
-    {/if}
+    <MessagePopup bind:this={messagePopup} />
   </div>
 </div>
