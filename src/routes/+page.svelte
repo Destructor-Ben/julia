@@ -14,6 +14,7 @@
   import { glide } from "$lib/transitions";
 
   let showSettings = $state(false);
+  let showExportScreen = $state(false);
 
   let header: HTMLElement;
 
@@ -206,41 +207,6 @@
     config.translationX -= deltaX * cosRot + deltaY * sinRot;
     config.translationY -= deltaX * -sinRot + deltaY * cosRot;
   }
-
-  // #endregion
-
-  // #region Exporting
-
-  let showExportScreen = $state(false);
-
-  // TODO: make this use a config defined above and decide whether to export and image or fractal
-  function exportFractal() {
-
-  }
-
-  // TODO: save and load images + animations
-  function saveImage() {
-    console.log("Saving image...");
-
-    // TODO: create a new canvas and renderer with the desired resolution
-    const imgLink = canvas.toDataURL("image/png");
-
-    // Create a temporary link element and "click" it
-    let link = document.createElement("a");
-    link.href = imgLink;
-    link.download = "Julia.png";
-    link.click();
-
-    console.log("Image saved");
-  }
-
-  function saveAnimation() {
-    console.log("Saving animation...");
-    
-    console.log("Animation saved");
-  }
-
-  // TODO: save and load configs
 
   // #endregion
 </script>

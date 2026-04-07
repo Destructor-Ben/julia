@@ -81,10 +81,10 @@
   <Number bind:value={config.setValue} min={0} max={1} step={0.01} />
 
   <SettingsLabel label="Falloff Color Strength" tooltip="A multiplier to the falloff color to allow blowing it out by raising it's brightness above 1\nLowering this and raising falloff strength have similar effects\n(ignoring that lowering falloff strength doesn't cause blowout)" />
-  <Number bind:value={config.fractalColorStrength} min={0} max={1000} step={0.01} />
+  <Number bind:value={config.falloffColorStrength} min={0} max={1000} step={0.01} />
 
   <SettingsLabel label="Falloff Color" />
-  <Color bind:r={config.fractalColorR} bind:g={config.fractalColorG} bind:b={config.fractalColorB} bind:a={config.fractalColorA} />
+  <Color bind:r={config.falloffColorR} bind:g={config.falloffColorG} bind:b={config.falloffColorB} bind:a={config.falloffColorA} />
 
   <SettingsLabel label="Background Color" />
   <Color bind:r={config.backgroundColorR} bind:g={config.backgroundColorG} bind:b={config.backgroundColorB} bind:a={config.backgroundColorA} />

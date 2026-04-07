@@ -271,8 +271,8 @@ export default class JuliaRenderer {
     const config = this.config;
 
     // Update color settings
-    gl.uniform1f(uniforms.fractalColorStrength, config.fractalColorStrength);
-    gl.uniform4f(uniforms.fractalColor, config.fractalColorR / 255, config.fractalColorG / 255, config.fractalColorB / 255, config.fractalColorA);
+    gl.uniform1f(uniforms.fractalColorStrength, config.falloffColorStrength);
+    gl.uniform4f(uniforms.fractalColor, config.falloffColorR / 255, config.falloffColorG / 255, config.falloffColorB / 255, config.falloffColorA);
     gl.uniform4f(uniforms.backgroundColor, config.backgroundColorR / 255, config.backgroundColorG / 255, config.backgroundColorB / 255, config.backgroundColorA);
     
     gl.uniform4f(uniforms.setColor, config.setColorR / 255, config.setColorG / 255, config.setColorB / 255, config.setColorA);

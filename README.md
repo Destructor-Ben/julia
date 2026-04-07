@@ -21,8 +21,6 @@ Located [here](https://destructor-ben.github.io/julia).
 - also use cards/groups in settings instead of just having new headings
 - Favicon
 - make sure the user knows that any values can be put into the settings, not just the min and max on the sliders
-- Make the export screen
-    - Make the resolution settings available in an export screen
 - Allow to use a falloff that makes the extremely dim areas get remapped down very easily
 - Allow a custom glsl expression for a falloff
 - Allow a custom glsl function to evaluate a fractal
