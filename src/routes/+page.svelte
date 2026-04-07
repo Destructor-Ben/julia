@@ -2,7 +2,7 @@
   import { untrack } from "svelte";
 
   import JuliaRenderer from "$lib/julia/julia-renderer";
-  import { defaultConfig } from "$lib/julia/julia-config";
+  import { defaultConfig, type Config } from "$lib/julia/julia-config";
 
   import HeaderButton from "./HeaderButton.svelte";
   
@@ -12,6 +12,7 @@
   import Settings from "./Settings.svelte";
   import ExportPopup from "./ExportPopup.svelte";
   import { glide } from "$lib/transitions";
+  import { Presets } from "$lib/julia/presets";
 
   let showSettings = $state(false);
   let showExportScreen = $state(false);
@@ -209,6 +210,54 @@
   }
 
   // #endregion
+
+  // #region Presets
+
+  let selectedPreset = $state(0);
+
+  const presetOptions: { id: any, name: string }[] = [];
+  const presetConfigs: Config[] = [defaultConfig];
+
+  presetOptions.push({
+    id: 0,
+    name: "Default",
+  });
+
+  presetOptions.push({
+    id: -1,
+    name: "Custom",
+  });
+
+  Presets.forEach(preset => {
+    presetOptions.push({
+      id: presetConfigs.length,
+      name: preset.name,
+    });
+
+    presetConfigs.push(preset.config);
+  });
+
+  // Set config when the preset is selected
+  $effect(() => {
+    if (selectedPreset >= 0) {
+      config = presetConfigs[selectedPreset];
+    }
+  });
+
+  // Set custom preset if the config is changed
+  $effect(() => {
+    if (selectedPreset < 0) {
+      return;
+    }
+
+    let { width: _a, height: _b, ...strippedConfig } = config;
+    let { width: _c, height: _d, ...strippedPreset } = presetConfigs[selectedPreset];
+    if (JSON.stringify(strippedConfig) != JSON.stringify(strippedPreset)) {
+      selectedPreset = -1;
+    }
+  });
+
+  // #endregion
 </script>
 
 <svelte:head>
@@ -261,7 +310,7 @@
 
   {#if showSettings}
     <div class="w-125 bg-ctp-crust/90 backdrop-blur-lg p-4 absolute top-0 left-0 overflow-y-scroll overflow-x-hidden border-r-2 border-r-ctp-surface1" style={`height: ${config.height}px;`} transition:glide={{ x: '-100%', duration: 300 }}>
-      <Settings bind:config={config} />
+      <Settings bind:config={config} bind:selectedPreset={selectedPreset} {presetOptions} />
     </div>
   {/if}
 </div>

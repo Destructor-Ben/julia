@@ -2,9 +2,15 @@ import FalloffType from "./falloff-type";
 import FractalType from "./fractal-type";
 
 export const defaultConfig: Config = {
-  fractal: FractalType.Julia,
   width: 960,
   height: 540,
+
+  fractal: FractalType.Julia,
+
+  real: -0.8727786784188099,
+  imaginary: -0.2595344618589833,
+
+  exponent: 2,
 
   translationX: 0,
   translationY: 0,
@@ -13,65 +19,60 @@ export const defaultConfig: Config = {
 
   maxIterations: 100,
   radius: 4,
+  
+  falloffType: FalloffType.Sigmoid,
+  falloffStrength: 3000,
 
-  falloffColorR: 180,
-  falloffColorG: 111,
-  falloffColorB: 214,
+  useSetColorOverValue: false,
+  setValue: 0.5,
+  falloffColorStrength: 100,
+
+  falloffColorR: 177,
+  falloffColorG: 102,
+  falloffColorB: 242,
   falloffColorA: 1,
-  falloffColorStrength: 255,
 
-  backgroundColorR: 0,
-  backgroundColorG: 0,
-  backgroundColorB: 0,
-  backgroundColorA: 0,
+  backgroundColorR: 30,
+  backgroundColorG: 30,
+  backgroundColorB: 46,
+  backgroundColorA: 1,
 
   setColorR: 0,
   setColorG: 0,
   setColorB: 0,
   setColorA: 1,
-  setValue: 0.5,
-  useSetColorOverValue: false,
-  
-  falloffType: FalloffType.Sigmoid,
-  falloffStrength: 6000,
-
-  real: -0.8727786784188099,
-  imaginary: -0.2595344618589833,
-
-  exponent: 2,
 };
 
 export interface Config {
-  // Fractal
-  fractal: FractalType;
-  
-  // Julia
-  real: number;
-  imaginary: number;
-
-  // Mandelbrot
-  exponent: number;
-
-  // Calculation
-  maxIterations: number;
-  radius: number;
-
-  // Image
   width: number;
   height: number;
 
-  // Transformation
+  fractal: FractalType;
+  
+  real: number;
+  imaginary: number;
+
+  exponent: number;
+
   translationX: number;
   translationY: number;
   rotation: number;
   scale: number;
 
-  // Colors
+  maxIterations: number;
+  radius: number;
+
+  falloffType: FalloffType;
+  falloffStrength: number;
+
+  useSetColorOverValue: boolean;
+  setValue: number;
+  falloffColorStrength: number;
+
   falloffColorR: number;
   falloffColorG: number;
   falloffColorB: number;
   falloffColorA: number;
-  falloffColorStrength: number;
 
   backgroundColorR: number;
   backgroundColorG: number;
@@ -82,10 +83,4 @@ export interface Config {
   setColorG: number;
   setColorB: number;
   setColorA: number;
-  setValue: number;
-  useSetColorOverValue: boolean;
-  
-  // Falloff
-  falloffType: FalloffType;
-  falloffStrength: number;
 }

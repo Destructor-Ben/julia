@@ -11,7 +11,7 @@
   import SettingsLabel from "./SettingsLabel.svelte";
   import Color from "$lib/components/input/Color.svelte";
 
-  let { config = $bindable() }: { config: Config } = $props();
+  let { config = $bindable(), selectedPreset = $bindable(), presetOptions }: { config: Config, selectedPreset: number, presetOptions: any } = $props();
 
   const fractalTypes = Object.keys(FractalType)
                              .filter(key => typeof FractalType[key as any] === 'number')
@@ -24,6 +24,11 @@
 
 <Heading level={2} class="text-center mb-2">Julia Config</Heading>
 <hr class="border border-ctp-overlay0 my-2 rounded-full" />
+
+<SettingsGroup heading="Preset">
+  <SettingsLabel label="Select Preset" />
+  <Dropdown bind:value={selectedPreset} options={presetOptions} />
+</SettingsGroup>
 
 <SettingsGroup heading="Fractal">
   <SettingsLabel label="Fractal Type" />
@@ -74,7 +79,7 @@
 </SettingsGroup>
 
 <SettingsGroup heading="Colors">
-  <SettingsLabel label="Use Set Color" tooltip="Whether to use the provided color for pixels in the set,\nor to pretend that pixels in the set have the value provided below\nCan be used to hide fireflies" />
+  <SettingsLabel label="Use Set Color" tooltip="Whether to use the provided color for pixels in the set,\nor to pretend that pixels in the set have the falloff value provided below\nCan be used to hide fireflies" />
   <Toggle id="useSetColorOverValue" bind:value={config.useSetColorOverValue} />
   
   <SettingsLabel label="Set Value" tooltip="The falloff value that each pixel in the set is assigned if the above toggle is enabled" />
